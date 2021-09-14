@@ -102,6 +102,8 @@ const types = getProrperty(icons, 'type');
 // creiamo un array di colori 
 const color = ['red', 'green', 'blue', 'black', 'yellow'];
 let colorizedIcons = colorizeItems(icons, color);
+let select = document.getElementById('my_select');
+addOptions(types, select);
 
 /* Milestone 1
 Partendo dalla seguente struttura dati , mostriamo in pagina tutte
@@ -111,17 +113,20 @@ mostraInPagina(colorizedIcons, container);
 
 function mostraInPagina(array, container){
 
+    let temporaryHTML = '';
+
     array.forEach((element) => {
 
         const {name, prefix, type, family, color} = element;
 
-        container.innerHTML += 
+        temporaryHTML += 
         `<div>
             <i class="${family} ${prefix}${name}"  style="color: ${color}"></i>
             <h4>${name} (${type})</h4>
         </div>
         `;
     });
+    container.innerHTML = temporaryHTML;
 }
 /* Milestone 2
 Coloriamo le icone per tipo */
@@ -165,4 +170,41 @@ function colorizeItems(array, colors){
         return element;
     })
     return colorizedArray;
+}
+
+/* Milestone 3
+Creiamo una select con i tipi di icone e usiamola per filtrare le icone */
+
+// A) prima cosa dobbiamo generare le opzioni nella select per ogni tipo
+
+
+
+//funzione che ci genera le opzioni
+
+//dove ootions e l arrai di opzioni da aggiongere e selelct e la select alla quale aggungerle 
+function addOptions(options, select){
+    options.forEach((element)=>{
+        select.innerHTML+= `<option value="${element}">${element}</option>`;
+    })
+}
+
+// B) filtrare gli elementi da visualizzare in abse alla selzione attraverso un eventi [onChange],
+// qunado l'utente cambia l'opzione in una select
+
+select.addEventListener('change', () => {
+    const selectValue = select.value;
+    /* console.log(selectValue); */
+
+    const filteredIcons = filterItems(icons, selectValue);
+    mostraInPagina(filteredIcons, container);
+})
+
+function filterItems(array, filter){
+    //se ho selezionato all in tutto l'array
+    if(filter.trim().toLowerCase() === 'all'){
+        return array;
+    }
+    // altrimenti ritorno esclusivamwente i valori che hanno xcome tipo il tipo specificato 
+    //come -filter- in questa funzione
+    return array.filter(element => element.type == filter);
 }
